@@ -1,0 +1,37 @@
+# rubric_carrboro.yaml — SCAFFOLD rubric for the ArtsCenter/Carrboro fork.
+# Proves the re-seed path end-to-end: `cargo run --bin validate -- --city carrboro`.
+#
+# ⚠️ target_share below is a PLACEHOLDER, not ground truth. Before treating scores as
+# meaningful, replace it with frozen historical registration shares from the real
+# ArtsCenter/ArtsCamp records (registered households ÷ adult population for a past
+# season) — and, per the repo's methodology rules, never tune prompts against a
+# target you set yourself. The example population (data/carrboro_pums.csv) is also
+# illustrative; see FORK_NOTES.md for swapping in a real NC PUMS pull.
+
+meta:
+  validation_n: 48          # tiny example population: one agent per CSV row
+  default_seed: 42
+  notes: "First-fork scaffold: one attendance-intent poll over the example Carrboro population, answered by claude-sonnet-5. p_hat x total PWGTP = expected registering households."
+
+weights:
+  elections_measures: 1.0   # the attendance poll rides the Vote framing
+  resolved_markets_sf_informative: 0.0
+  resolved_markets_general: 0.0
+  live_markets: 0.0
+  counterfactuals: 0.0      # none yet; add e.g. "scholarship announced" events later
+
+thresholds:
+  weighted_score_min: 0.25            # scaffold gate: proves the loop, not accuracy
+  elections_measures_max_abs_err: 0.16
+  resolved_markets_max_brier: 0.18
+  counterfactual_direction_min: 0.80
+
+elections_measures:
+  - id: artscenter_fall_workshop_reg
+    as_of_date: "2026-08-15"
+    model: claude-sonnet-5
+    population: all
+    question: "This fall season, does your household register and pay for at least one class or workshop at The ArtsCenter in Carrboro?"
+    description: "The ArtsCenter is Carrboro's community arts nonprofit. Its fall catalog includes adult classes in pottery, painting, printmaking, improv, and music (typically $180-$280 for 6-8 weekly sessions), one-off weekend workshops ($45-$75), and youth after-school and camp programs ($150-$250), with limited scholarships available. Registration opens mid-August; classes run September through November at the downtown Carrboro facility. YES means this resident's household actually registers and pays for at least one fall offering (for themselves or a child), not merely that they like the ArtsCenter."
+    target_share: 0.10   # PLACEHOLDER — replace with frozen historical share
+    tolerance: 0.08
