@@ -12,7 +12,7 @@
 meta:
   validation_n: 12          # ignored for audience panels (every member polled once)
   default_seed: 42
-  notes: "Fork A scaffold: mentor-betrayal beat reception over the example reader/player panel, answered by claude-sonnet-5. Weights are audience shares (sum 100), so p_hat = share of the audience reacting positively."
+  notes: "Fork A: mentor-betrayal beat reception over the genre-market reviewer panel (data/audiences/readers.json), answered by claude-sonnet-5. Member weights are Kindle/KU genre-market shares summing to 100, so p_hat = % of the modeled reading market that praises the beat, and per-genre breakdowns show which clusters split for/against."
 
 weights:
   elections_measures: 1.0   # beat-reception polls ride the Vote framing (YES = loved it)

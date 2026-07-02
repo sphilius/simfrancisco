@@ -1,125 +1,172 @@
 {
   "audience": "readers",
+  "description": "Kindle/KU fiction reviewer-cluster panel. Each member is a genre/subgenre reader segment; `weight` is that segment's approximate share of the modeled Amazon Kindle + Kindle Unlimited fiction *reading* market (weights sum to 100, so a poll's p_hat reads directly as % of the market). Weights are calibrated to PUBLIC genre-market signals (K-lytics-style analysis), NOT scraped from proprietary K-lytics reports or live BSR/KU dashboards. Replace weights with your K-lytics subscription figures and refine segments/prose from your own reviewer datasets + value-shift tags. See FORK_NOTES.md.",
+  "sources": [
+    "Romance ~40%+ of Kindle sales, ~81% avg KU penetration; romance+fantasy >60% of KU top earners (Robertson Kindle-market genre breakdown; K-lytics Romance report page; Write-A-Catalyst KU genres).",
+    "Romantasy/fantasy-romance now outsells traditional fantasy ~3:1 and leads reader demand (K-lytics Fantasy-Romance report; Arkham House 2026 genre trends).",
+    "Fantasy ~13%, Sci-Fi ~8%, Thriller ~7%, Mystery/Thriller ~1/5 of Kindle sales (Robertson).",
+    "Genre reader skews: romance heavily female; sci-fi male-skewed; fantasy gender-balanced & younger; LitRPG/progression younger-male gamer, Royal Road->KU; cozy mystery older-female; literary fiction older, purchase/print-skewed (YouGov; Sisters in Crime consumer report; Marketing Charts; New Book Recommendation)."
+  ],
   "members": [
     {
-      "id": "bt_romantasy", "name": "Maya", "age": 26,
-      "segment": "BookTok romantasy devotee", "weight": 14,
-      "platforms": ["Kindle Unlimited", "BookTok"],
-      "genres": ["romantasy", "fae-court fantasy"],
-      "axes": {"narrative_risk": -0.5, "challenge": -0.4, "agency": -0.2, "tone": -0.4},
-      "values": ["found-family", "earned happy endings", "slow-burn payoff"],
+      "id": "contemporary_romance", "name": "Ashley", "age": 34,
+      "segment": "contemporary-romance KU binge-reader (largest single cluster)", "weight": 13,
+      "platforms": ["Kindle Unlimited", "audiobook", "BookTok"],
+      "genres": ["contemporary romance", "small-town romance", "rom-com"],
+      "axes": {"narrative_risk": -0.4, "challenge": -0.4, "agency": -0.2, "tone": -0.3},
+      "values": ["guaranteed HEA", "found-family", "emotional safety", "slow-burn payoff"],
       "spoiler_tolerance": 0.3,
-      "persona": "Reads four books a week, DNFs fast, and posts emotional reviews to a 40k-follower audience; a betrayal of a beloved character can flip her from evangelist to warning-label reviewer overnight."
+      "persona": "Reads 15+ KU romances a month; reviews center on whether the emotional promise was kept. A gut-punch that threatens the central relationship reads as a broken contract."
     },
     {
-      "id": "grimdark_vet", "name": "Doran", "age": 41,
-      "segment": "grimdark veteran", "weight": 8,
-      "platforms": ["hardcover", "r/fantasy"],
-      "genres": ["grimdark", "military fantasy"],
-      "axes": {"narrative_risk": 0.8, "challenge": 0.3, "agency": 0.0, "tone": 0.9},
-      "values": ["consequences that stick", "moral grayness", "no plot armor"],
+      "id": "romantasy", "name": "Maya", "age": 27,
+      "segment": "romantasy / fantasy-romance reader (fastest-growing cluster)", "weight": 14,
+      "platforms": ["Kindle Unlimited", "BookTok", "hardcover special editions"],
+      "genres": ["romantasy", "fae-court fantasy", "fantasy romance"],
+      "axes": {"narrative_risk": -0.1, "challenge": -0.2, "agency": -0.1, "tone": 0.0},
+      "values": ["romance must survive", "high stakes with earned HEA", "morally-gray love interest", "slow burn"],
+      "spoiler_tolerance": 0.3,
+      "persona": "Drove the romantasy boom; tolerates darkness and betrayal AS LONG AS the romance thread is protected. Posts emotional reviews to a large BookTok following that can make or break a launch."
+    },
+    {
+      "id": "dark_romance", "name": "Sirena", "age": 29,
+      "segment": "dark-romance / morally-gray reader", "weight": 7,
+      "platforms": ["Kindle Unlimited", "BookTok", "Fable"],
+      "genres": ["dark romance", "mafia romance", "antihero romance"],
+      "axes": {"narrative_risk": 0.7, "challenge": 0.0, "agency": -0.1, "tone": 0.8},
+      "values": ["intensity", "moral grayness", "betrayal as spice", "no sanitizing"],
+      "spoiler_tolerance": 0.5,
+      "persona": "Seeks out exactly the betrayals cozier readers flee; rates a story higher when it has the nerve to hurt her. A well-built double-cross is a selling point in her reviews."
+    },
+    {
+      "id": "paranormal_romance", "name": "Danielle", "age": 41,
+      "segment": "paranormal-romance / fated-mates reader", "weight": 5,
+      "platforms": ["Kindle Unlimited", "audiobook"],
+      "genres": ["paranormal romance", "shifter romance", "vampire romance"],
+      "axes": {"narrative_risk": 0.2, "challenge": -0.2, "agency": -0.1, "tone": 0.4},
+      "values": ["fated-mates payoff", "loyalty", "alpha-with-a-heart", "series continuity"],
+      "spoiler_tolerance": 0.4,
+      "persona": "Long-haul series reader; forgives darkness if the bond stays sacred, but a mentor-figure betrayal that taints the mate bond will show up as a one-star warning."
+    },
+    {
+      "id": "romantic_suspense", "name": "Gwen", "age": 46,
+      "segment": "romantic-suspense reader", "weight": 4,
+      "platforms": ["Kindle Unlimited", "print", "Goodreads"],
+      "genres": ["romantic suspense", "thriller romance"],
+      "axes": {"narrative_risk": 0.4, "challenge": 0.2, "agency": -0.1, "tone": 0.3},
+      "values": ["twists welcome", "competence", "danger with a safety net", "earned trust"],
+      "spoiler_tolerance": 0.6,
+      "persona": "Wants the betrayal AND the reassurance; enjoys being fooled if the clues were fair and the couple survives the fallout."
+    },
+    {
+      "id": "epic_fantasy", "name": "Doran", "age": 39,
+      "segment": "epic / traditional-fantasy reader", "weight": 6,
+      "platforms": ["hardcover", "audiobook", "r/fantasy"],
+      "genres": ["epic fantasy", "high fantasy"],
+      "axes": {"narrative_risk": 0.6, "challenge": 0.4, "agency": 0.0, "tone": 0.5},
+      "values": ["consequences that stick", "worldbuilding payoff", "no plot armor", "thematic weight"],
       "spoiler_tolerance": 0.7,
-      "persona": "Has read every Abercrombie and Cook; rates stories by whether they have the nerve to follow through on their own stakes."
+      "persona": "Judges a story by whether it follows through on its own stakes; a fairly-foreshadowed mentor betrayal is exactly the kind of nerve he praises."
     },
     {
-      "id": "cozy_comfort", "name": "Elspeth", "age": 34,
-      "segment": "cozy-fantasy comfort reader", "weight": 10,
-      "platforms": ["Kindle", "library ebook"],
-      "genres": ["cozy fantasy", "slice-of-life"],
-      "axes": {"narrative_risk": -0.9, "challenge": -0.6, "agency": -0.3, "tone": -0.9},
-      "values": ["kindness rewarded", "low-stakes warmth", "no beloved-character deaths"],
-      "spoiler_tolerance": 0.2,
-      "persona": "Reads nightly to decompress from a stressful job; checks content warnings and 'does the dog die' before starting anything."
-    },
-    {
-      "id": "litrpg_binger", "name": "Trevor", "age": 29,
-      "segment": "litRPG/progression binge-reader", "weight": 9,
+      "id": "progression_litrpg", "name": "Trevor", "age": 26,
+      "segment": "progression-fantasy / LitRPG reader (KU-native, Royal Road pipeline)", "weight": 8,
       "platforms": ["Royal Road", "Kindle Unlimited", "audiobook"],
-      "genres": ["litRPG", "progression fantasy"],
+      "genres": ["LitRPG", "progression fantasy", "cultivation"],
       "axes": {"narrative_risk": 0.1, "challenge": 0.6, "agency": 0.4, "tone": 0.1},
-      "values": ["fair power scaling", "visible progression", "payoff for grinding"],
+      "values": ["fair power scaling", "visible progression", "payoff for the grind", "no wasted arcs"],
       "spoiler_tolerance": 0.5,
-      "persona": "Consumes 200k-word serials in a weekend; tolerant of rough prose but merciless about betrayed build-up."
+      "persona": "Binges 200k-word serials; tolerant of rough prose, merciless about betrayed build-up. A twist that stalls the protagonist's growth annoys him more than it moves him."
     },
     {
-      "id": "completionist", "name": "Ana", "age": 31,
-      "segment": "narrative-game completionist", "weight": 10,
-      "platforms": ["PC/Steam", "Switch"],
-      "genres": ["story-rich RPGs", "adventure games"],
-      "axes": {"narrative_risk": 0.2, "challenge": 0.2, "agency": 0.6, "tone": 0.1},
-      "values": ["choices matter", "no content locked away", "companion depth"],
-      "spoiler_tolerance": 0.4,
-      "persona": "100%s every companion questline; judges a twist by whether her earlier choices acknowledged it on replay."
-    },
-    {
-      "id": "challenge_seeker", "name": "Kenji", "age": 24,
-      "segment": "souls-like challenge seeker", "weight": 7,
-      "platforms": ["PC", "PS5"],
-      "genres": ["souls-likes", "roguelikes"],
-      "axes": {"narrative_risk": 0.5, "challenge": 0.9, "agency": 0.3, "tone": 0.6},
-      "values": ["earned victory", "no hand-holding", "environmental storytelling"],
-      "spoiler_tolerance": 0.8,
-      "persona": "Plays everything blind at max difficulty; respects stories that trust the player to piece things together."
-    },
-    {
-      "id": "casual_evening", "name": "Priya", "age": 38,
-      "segment": "casual evening player", "weight": 12,
-      "platforms": ["iPad", "Switch"],
-      "genres": ["cozy sims", "puzzle-narrative hybrids"],
-      "axes": {"narrative_risk": -0.3, "challenge": -0.8, "agency": -0.4, "tone": -0.2},
-      "values": ["respects my time", "pick-up-and-play", "gentle difficulty curve"],
+      "id": "urban_fantasy_pwf", "name": "Renee", "age": 44,
+      "segment": "urban-fantasy / paranormal-women's-fiction reader", "weight": 5,
+      "platforms": ["Kindle Unlimited", "audiobook"],
+      "genres": ["urban fantasy", "paranormal women's fiction"],
+      "axes": {"narrative_risk": 0.3, "challenge": 0.1, "agency": 0.2, "tone": 0.3},
+      "values": ["competent protagonist", "chosen family", "earned reveals", "midlife agency"],
       "spoiler_tolerance": 0.5,
-      "persona": "Forty-five minutes after the kids are down; abandons anything that punishes a two-week break."
+      "persona": "Wants a heroine who sees the betrayal coming and acts; respects a twist that tests the lead rather than one that just victimizes her."
     },
     {
-      "id": "ttrpg_gm", "name": "Marcus", "age": 45,
-      "segment": "TTRPG game-master", "weight": 6,
-      "platforms": ["tabletop", "PC"],
-      "genres": ["TTRPG campaigns", "CRPGs"],
-      "axes": {"narrative_risk": 0.4, "challenge": 0.3, "agency": 0.9, "tone": 0.3},
-      "values": ["player agency", "emergent story", "NPCs with their own agendas"],
+      "id": "science_fiction", "name": "Kwame", "age": 37,
+      "segment": "science-fiction reader (male-skewed, idea-driven)", "weight": 5,
+      "platforms": ["Kindle", "hardcover", "audiobook"],
+      "genres": ["space opera", "hard SF", "military SF"],
+      "axes": {"narrative_risk": 0.5, "challenge": 0.5, "agency": 0.1, "tone": 0.3},
+      "values": ["idea payoff", "internal consistency", "thematic coherence", "earned turns"],
+      "spoiler_tolerance": 0.7,
+      "persona": "Forgives a dark turn the premise has been arguing for; rejects a twist that only works if characters act stupidly."
+    },
+    {
+      "id": "psych_thriller", "name": "Bethany", "age": 42,
+      "segment": "psychological-thriller reader", "weight": 8,
+      "platforms": ["Kindle", "audiobook", "Goodreads"],
+      "genres": ["psychological thriller", "domestic suspense"],
+      "axes": {"narrative_risk": 0.6, "challenge": 0.2, "agency": -0.1, "tone": 0.6},
+      "values": ["the twist IS the point", "fair misdirection", "gasp-worthy reveals"],
       "spoiler_tolerance": 0.6,
-      "persona": "Twenty years behind the screen; steals every good betrayal beat for his home campaign and knows exactly when one is unearned."
+      "persona": "Lives for the betrayal reveal; her top reviews are the ones where she 'never saw it coming but should have.' A clued mentor double-cross is the product she's buying."
     },
     {
-      "id": "litfic_reviewer", "name": "Helene", "age": 52,
-      "segment": "literary-fiction reviewer", "weight": 5,
-      "platforms": ["print", "Goodreads"],
-      "genres": ["literary fiction", "literary fantasy crossovers"],
-      "axes": {"narrative_risk": 0.6, "challenge": 0.0, "agency": -0.5, "tone": 0.4},
-      "values": ["thematic coherence", "earned tragedy", "prose quality"],
-      "spoiler_tolerance": 0.9,
-      "persona": "Writes long structural reviews; forgives any dark turn that the theme has been quietly arguing for since page one."
-    },
-    {
-      "id": "ya_librarian", "name": "Sam", "age": 33,
-      "segment": "YA librarian and gatekeeper", "weight": 8,
-      "platforms": ["ARCs", "library"],
-      "genres": ["YA fantasy", "middle grade"],
-      "axes": {"narrative_risk": -0.2, "challenge": -0.3, "agency": -0.1, "tone": -0.3},
-      "values": ["hopeful endings", "representation", "mentors teens can trust"],
-      "spoiler_tolerance": 0.4,
-      "persona": "Hand-sells to teen readers and orders for the collection; thinks hard about what a mentor's betrayal models for a 14-year-old."
-    },
-    {
-      "id": "vn_romancer", "name": "Lena", "age": 27,
-      "segment": "visual-novel route completionist", "weight": 6,
-      "platforms": ["PC", "mobile"],
-      "genres": ["visual novels", "romance sims"],
-      "axes": {"narrative_risk": 0.0, "challenge": -0.2, "agency": 0.7, "tone": -0.1},
-      "values": ["route fairness", "character interiority", "flagged content"],
+      "id": "cozy_mystery", "name": "Elspeth", "age": 58,
+      "segment": "cozy-mystery reader (older-female, KU-heavy)", "weight": 7,
+      "platforms": ["Kindle Unlimited", "large-print", "library"],
+      "genres": ["cozy mystery", "culinary cozy", "cozy paranormal"],
+      "axes": {"narrative_risk": -0.8, "challenge": -0.5, "agency": -0.2, "tone": -0.8},
+      "values": ["justice restored", "no beloved-character deaths", "comfort", "recurring cast intact"],
       "spoiler_tolerance": 0.3,
-      "persona": "Plays every route including the bad ends; a twist is fine, but taking a beloved companion off the board permanently better unlock something."
+      "persona": "Reads to feel safe; a permanent, somber mentor betrayal breaks the cozy promise and she'll flag it as too dark for the shelf she recommends from."
     },
     {
-      "id": "access_first", "name": "Rob", "age": 36,
-      "segment": "accessibility-first player", "weight": 5,
-      "platforms": ["PC with remapped controls", "Xbox"],
-      "genres": ["narrative adventures", "walking sims"],
-      "axes": {"narrative_risk": 0.1, "challenge": -0.5, "agency": 0.2, "tone": 0.0},
-      "values": ["difficulty options", "no fail-states as punishment", "story mode parity"],
+      "id": "crime_detective", "name": "Frank", "age": 55,
+      "segment": "crime / fair-play-detective reader", "weight": 4,
+      "platforms": ["print", "Kindle", "audiobook"],
+      "genres": ["detective fiction", "police procedural", "whodunit"],
+      "axes": {"narrative_risk": 0.4, "challenge": 0.3, "agency": 0.0, "tone": 0.5},
+      "values": ["fair-play clues", "earned reveal", "logic holds up on reread"],
       "spoiler_tolerance": 0.6,
-      "persona": "Reviews games for an accessibility outlet; cares whether the emotional gut-punch is delivered through play rather than a cutscene."
+      "persona": "Grades a betrayal on whether the clues were on the page; a fairly-foreshadowed mentor reveal earns his respect, an out-of-nowhere one earns a lecture."
+    },
+    {
+      "id": "cozy_fantasy", "name": "Wren", "age": 31,
+      "segment": "cozy-fantasy / slice-of-life reader (emerging cluster)", "weight": 4,
+      "platforms": ["Kindle Unlimited", "BookTok", "audiobook"],
+      "genres": ["cozy fantasy", "slice-of-life fantasy"],
+      "axes": {"narrative_risk": -0.8, "challenge": -0.6, "agency": -0.3, "tone": -0.9},
+      "values": ["low-stakes warmth", "kindness rewarded", "no betrayal of the safe cast", "found-family"],
+      "spoiler_tolerance": 0.3,
+      "persona": "Came for tea-shop comfort; a permanent mentor betrayal is precisely the tonal violation the subgenre exists to avoid, and her review will say so."
+    },
+    {
+      "id": "literary_bookclub", "name": "Helene", "age": 53,
+      "segment": "literary / book-club reader (older, purchase/print-skewed, review-influential)", "weight": 4,
+      "platforms": ["print", "NetGalley ARC", "Goodreads"],
+      "genres": ["literary fiction", "literary fantasy crossover", "upmarket fiction"],
+      "axes": {"narrative_risk": 0.6, "challenge": 0.0, "agency": -0.5, "tone": 0.4},
+      "values": ["thematic coherence", "earned tragedy", "prose quality", "moral complexity"],
+      "spoiler_tolerance": 0.9,
+      "persona": "Writes long structural reviews and drives book-club picks; forgives any dark turn the theme has been quietly arguing for since page one."
+    },
+    {
+      "id": "ya_crossover", "name": "Sam", "age": 33,
+      "segment": "YA-crossover fantasy reader / librarian gatekeeper", "weight": 3,
+      "platforms": ["ARCs", "library", "BookTok"],
+      "genres": ["YA fantasy", "crossover fantasy"],
+      "axes": {"narrative_risk": -0.2, "challenge": -0.3, "agency": -0.1, "tone": -0.3},
+      "values": ["hopeful endings", "representation", "mentors teens can trust", "age-appropriate darkness"],
+      "spoiler_tolerance": 0.4,
+      "persona": "Hand-sells to teens and orders for the collection; weighs what a mentor's betrayal models for a 14-year-old before praising or flagging it."
+    },
+    {
+      "id": "grimdark", "name": "Kestrel", "age": 36,
+      "segment": "grimdark-fantasy reader", "weight": 3,
+      "platforms": ["hardcover", "r/fantasy", "audiobook"],
+      "genres": ["grimdark", "dark fantasy"],
+      "axes": {"narrative_risk": 0.8, "challenge": 0.3, "agency": 0.0, "tone": 0.9},
+      "values": ["no plot armor", "consequences that stick", "moral grayness", "unflinching"],
+      "spoiler_tolerance": 0.8,
+      "persona": "Rates stories by whether they have the nerve to follow through; a mentor who orchestrated the disaster is the kind of gut-punch that earns his five stars."
     }
   ]
 }

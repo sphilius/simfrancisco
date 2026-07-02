@@ -83,6 +83,33 @@ exemplar review voice, `weight` = cluster share). Honest rubric targets = frozen
 observed shares from shipped titles (e.g. positive-mention rate of a comparable twist
 among reviews), never targets set after seeing the model's answer.
 
+### The panel is genre-market-calibrated (K-lytics-style)
+
+`data/audiences/readers.json` is no longer an ad-hoc example — its 16 members are the
+major Kindle/KU fiction **genre-market reviewer clusters**, and each `weight` is that
+segment's approximate share of the modeled reading market (weights sum to 100, so a
+poll's `p_hat` reads directly as *% of the market* and per-cluster contribution is
+just `weight × p_yes`). The weights are calibrated to **public** genre-market signals,
+not scraped from proprietary K-lytics reports or live BSR/KU dashboards (no access to
+either) — the file's `sources` array records what each figure rests on. Signals used:
+
+- Romance dominates (~40%+ of Kindle sales, ~81% avg KU penetration); romance+fantasy
+  are >60% of KU top earners → the romance bloc (contemporary, romantasy, dark, PNR,
+  romantic suspense) is ~43% of panel weight.
+- Romantasy/fantasy-romance now outsells traditional fantasy ~3:1 and leads demand →
+  it's the single largest cluster (14).
+- Fantasy ~13%, Sci-Fi ~8%, Mystery/Thriller ~20% of Kindle sales; LitRPG/progression
+  is a KU-native, Royal-Road-fed segment; cozy mystery is older-female and KU-heavy;
+  literary fiction is smaller, older, purchase/print-skewed and review-influential.
+- Per-genre reader skews (gender/age/spoiler-tolerance) set each member's `axes` and
+  demographics.
+
+**To make it yours:** overwrite each `weight` with the market share from your K-lytics
+subscription report, then replace/split segments and rewrite `persona`/`values` from
+your own reviewer-dataset clusters. Nothing else changes; re-run `validate`. A parallel
+*player* panel (Steam/itch genre analytics) would be a second `data/audiences/*.json`
+with the same schema.
+
 ## Fork (B) reference re-seed (kept in-tree)
 
 Built first to prove the data-only seam (no engine code touched):
@@ -147,30 +174,40 @@ Put keys in `.env` (git-ignored; see `.env.example`).
 Environment: sandbox, **no API keys**, so the LLM step used the bring-your-own-LLM
 path with **Claude Sonnet 5** producing every archetype answer.
 
-### Fork (A): reader/player panel
+### Fork (A): genre-market reviewer panel
 
 1. `cargo test -p simfrancisco` — **45 passed, 0 failed** (44 lib + 1 contract),
-   including the new audience-schema tests and a clustering test asserting curated
-   panels never merge.
-2. Prompt dump → **one** batched call (12 members → 12 archetypes → 1 batch);
+   including the audience-schema tests and a clustering test asserting curated panels
+   never merge.
+2. Prompt dump → **two** batched calls (16 members → 16 archetypes → 12 + 4);
    answered by Claude Sonnet 5; seeded into `cache.db`; re-run offline:
 
    ```
-   ELECTION mentor_betrayal_twist_reception  pred=0.386 target=0.550 err=0.164 tol=0.150 score=0.45 FAIL
-   WEIGHTED HEADLINE = 0.4547  (gate ≥ 0.25)  PASS   llm: 0 calls, 1 cache hit
+   ELECTION mentor_betrayal_twist_reception  pred=0.466 target=0.550 err=0.084 tol=0.150 score=0.72 PASS
+   WEIGHTED HEADLINE = 0.7193  (gate ≥ 0.25)  PASS   llm: 0 calls, 2 cache hits
    ```
 
-   Byte-identical across re-runs. The forecast: **38.6%** of the weighted audience
-   (95% CI 24–56%; small panel → wide CI by design) would praise the mentor-betrayal
-   beat. The per-persona answers are the actual product — sharply value-driven:
-   grimdark veteran 0.88 and lit-fic reviewer 0.85 ("theme-seeded tragedy") vs cozy
-   reader 0.04 and BookTok romantasy 0.07 ("breaks found-family comfort"), with
-   agency-focused players at 0.32 docking it *specifically because the reveal is
-   unpreventable* — i.e. the panel localizes WHY the beat splits the audience and for
-   whom. The entry's FAIL against the placeholder 0.55 target is the tool working:
-   against this audience mix (weighted toward comfort/casual segments) the beat
-   under-performs the target, which is exactly the design signal a beat poll exists
-   to produce.
+   Byte-identical across re-runs. **Because the panel weights are genre-market
+   shares, the headline number is a market forecast: 46.6% of the modeled Kindle/KU
+   fiction market would praise the mentor-betrayal beat in a review** — and the
+   per-cluster split (contribution = weight × p_yes) is the actionable product:
+
+   | Cluster (wt% of market) | p(praise) |
+   |---|---|
+   | grimdark 3 · epic fantasy 6 · dark romance 7 · psych thriller 8 · literary 4 | 0.88–0.92 (loves it) |
+   | crime/fair-play 4 · sci-fi 5 · romantic suspense 4 | 0.60–0.80 |
+   | **romantasy 14** (largest cluster) | **0.50 — the swing**, tolerates it only because the romance thread survives |
+   | LitRPG 8 · urban fantasy 5 · YA 3 | 0.18–0.38 |
+   | **contemporary romance 13 · cozy mystery 7 · cozy fantasy 4 · PNR 5** | 0.04–0.12 (hard no) |
+
+   Net: **41% of the market loves the beat, 37% hates it** — a genuinely polarizing
+   design decision, and the panel says *exactly which shelves* drive each side. The
+   load-bearing insight: your two largest clusters (contemporary romance + romantasy =
+   27% of the market) are lukewarm-to-hostile, so this beat risks read-through in the
+   segments that matter most commercially — unless the romance thread is protected,
+   which is precisely the lever that holds romantasy at the 0.50 swing line. The FAIL
+   against the *placeholder* 0.55 target is the tool working; replace the target with a
+   frozen reviewer-dataset share before reading the score as truth.
 
 ### Fork (B) reference: Carrboro
 
