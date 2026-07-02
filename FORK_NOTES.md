@@ -28,16 +28,64 @@ requires code.
 | **Analogy strength** | Polling mechanics carry over, but "city twin" priors (turnout, religion, homeownership) are dead weight | Same species as the original: geographic community + participation propensity. `turnout_propensity` is a worked template for an attendance-propensity layer |
 | **Code changes for a first fork** | Persona schema redesign + prompt rework before the first honest poll | **Zero required** (this fork adds two tiny opt-in conveniences, see below) |
 
-**Recommendation: fork (B) first.** It exercises the engine exactly as designed —
-new TOML + new CSV + new rubric, no code — so you validate the re-seed path itself
-before bending any semantics. (A) is a second-generation fork: once (B) proves the
-loop, (A) needs a persona-schema generalization (trait axes + prose template made
-data-driven, the way `CityProfile` already made the city data-driven). Doing (A)
-first means doing that refactor blind.
+**Engine-fit verdict: (B) is the cleaner adaptation; (A) needs a persona-schema
+scaffold first.** (B) exercises the engine exactly as designed — new TOML + new CSV +
+new rubric, no code. (A) requires generalizing the persona layer (trait axes + prose
+made data-driven, the way `CityProfile` already made the city data-driven).
 
-## The first concrete change (this branch)
+**Decision: fork (A) is the chosen direction** (owner's call — the narrative/game-
+design use is the priority). Both forks are now in-tree: (B)'s Carrboro re-seed was
+built first as the zero-code proof of the seam and stays as a reference, and the
+persona-schema scaffold that (A) requires is implemented below, validated end-to-end
+the same way.
 
-Data (the actual re-seed — no engine code touched):
+## The chosen fork (A): reader/player audience scaffold
+
+**The persona schema** (`crates/sim-core/src/audience.rs` — the piece that didn't
+exist): an `AudienceMember` is `{id, name, age, segment, weight, platforms[],
+genres[], axes, values[], spoiler_tolerance, persona}` where
+
+- `weight` is the **audience-composition weight** (the PWGTP analog): what share of
+  the target audience this persona stands for. The example panel's weights sum to
+  100, so every poll result reads directly as *% of the audience*.
+- `axes` is a `TasteAxes` vector — the audience analog of the engine's `ValueVector`:
+  `narrative_risk` (comfort-reads … wants-to-be-wrecked), `challenge`, `agency`
+  (authored … player-driven), `tone` (cozy … grim), each in [-1, 1], rendered to
+  natural language in the profile prose.
+- `values` are free-form **value tags** (`found-family`, `consequences that stick`,
+  `choices matter`, …) — the hook for the value-shift tagging work: they are what a
+  beat honors or violates, and the natural mutable layer for future counterfactuals
+  ("add foreshadowing, re-poll").
+- `persona` is free prose appended verbatim — distill it straight from reviewer
+  datasets.
+
+**Wiring** (all opt-in, city paths untouched):
+
+- `data/audiences/<slug>.json` holds the panel; a profile opts in via
+  `audience_path` in its `data/cities/<slug>.toml` (`data/cities/readers.toml`).
+- Audience populations are built by `audience::build_population` — every member
+  exactly once with its weight (a panel is authored, not sampled).
+- Polling clusters **one persona per archetype** (`predict.rs`): curated members are
+  deliberately distinct, so demographic keys must never merge them. 12 members still
+  fit one batched LLM call.
+- `vote_prompt_override` (in `[politics]`) replaces the electorate framing with a
+  reader/player framing: "estimate the probability this person answers YES … as they
+  would actually react while reading or playing".
+- The example first poll (`rubric_readers.yaml`) is a narrative-beat reception
+  question — a fair-foreshadowed mentor-betrayal twist — with YES = "praises the
+  twist in their review". Design-decision polls (difficulty modes, branching vs
+  authored endings) ride the same path; multi-way questions can use the engine's
+  existing `Options` framing via the API.
+
+**Growing it from the reviewer datasets:** each reviewer cluster becomes a member
+(segment = cluster label, `values` = its value-shift tags, `persona` = a distilled
+exemplar review voice, `weight` = cluster share). Honest rubric targets = frozen
+observed shares from shipped titles (e.g. positive-mention rate of a comparable twist
+among reviews), never targets set after seeing the model's answer.
+
+## Fork (B) reference re-seed (kept in-tree)
+
+Built first to prove the data-only seam (no engine code touched):
 
 - **`data/cities/carrboro.toml`** — community profile: Carrboro/Chapel Hill identity,
   progressive college-town value baselines, Orange-County-ish religion weights, and
@@ -58,7 +106,9 @@ Data (the actual re-seed — no engine code touched):
   real historical registration shares from the ArtsCamp data before treating scores
   as meaningful, and never tune prompts against a target you just set.
 
-Code (two small, default-off conveniences in `crates/sim-core/src/model.rs`):
+## Shared plumbing (small, default-off code changes)
+
+In `crates/sim-core/src/model.rs` (used by both forks):
 
 - `Model::Sonnet5` (`claude-sonnet-5`) so the fork polls on Sonnet 5; existing
   `claude-*` strings still resolve to the previous default as before.
@@ -77,8 +127,9 @@ Code (two small, default-off conveniences in `crates/sim-core/src/model.rs`):
 # vendored via Cargo (rusqlite is bundled — no system sqlite needed). No tiles.db,
 # no frontend, no network data needed for polling.
 
-cargo test -p simfrancisco                 # engine unit + contract tests
-cargo run --bin validate -- --city carrboro   # seed -> personas -> poll -> forecast
+cargo test -p simfrancisco                    # engine unit + contract tests
+cargo run --bin validate -- --city readers    # fork A: panel -> personas -> poll -> forecast
+cargo run --bin validate -- --city carrboro   # fork B reference: PUMS -> poll -> forecast
 ```
 
 API keys (only for live LLM calls; cached/offline re-runs need none):
@@ -94,9 +145,36 @@ Put keys in `.env` (git-ignored; see `.env.example`).
 ## Verification (run in this session)
 
 Environment: sandbox, **no API keys**, so the LLM step used the bring-your-own-LLM
-path with **Claude Sonnet 5** producing every archetype answer:
+path with **Claude Sonnet 5** producing every archetype answer.
 
-1. `cargo test -p simfrancisco` — **41 passed, 0 failed** (40 lib + 1 contract).
+### Fork (A): reader/player panel
+
+1. `cargo test -p simfrancisco` — **45 passed, 0 failed** (44 lib + 1 contract),
+   including the new audience-schema tests and a clustering test asserting curated
+   panels never merge.
+2. Prompt dump → **one** batched call (12 members → 12 archetypes → 1 batch);
+   answered by Claude Sonnet 5; seeded into `cache.db`; re-run offline:
+
+   ```
+   ELECTION mentor_betrayal_twist_reception  pred=0.386 target=0.550 err=0.164 tol=0.150 score=0.45 FAIL
+   WEIGHTED HEADLINE = 0.4547  (gate ≥ 0.25)  PASS   llm: 0 calls, 1 cache hit
+   ```
+
+   Byte-identical across re-runs. The forecast: **38.6%** of the weighted audience
+   (95% CI 24–56%; small panel → wide CI by design) would praise the mentor-betrayal
+   beat. The per-persona answers are the actual product — sharply value-driven:
+   grimdark veteran 0.88 and lit-fic reviewer 0.85 ("theme-seeded tragedy") vs cozy
+   reader 0.04 and BookTok romantasy 0.07 ("breaks found-family comfort"), with
+   agency-focused players at 0.32 docking it *specifically because the reveal is
+   unpreventable* — i.e. the panel localizes WHY the beat splits the audience and for
+   whom. The entry's FAIL against the placeholder 0.55 target is the tool working:
+   against this audience mix (weighted toward comfort/casual segments) the beat
+   under-performs the target, which is exactly the design signal a beat poll exists
+   to produce.
+
+### Fork (B) reference: Carrboro
+
+1. `cargo test -p simfrancisco` — all green (see above).
 2. `MODEL_OFFLINE=1 DUMP_PROMPTS_DIR=… cargo run --bin validate -- --city carrboro`
    → dumped 4 batch prompts (48 agents → 40 archetypes → 4 batched calls).
 3. Each prompt answered by Claude Sonnet 5 (exact system+user, strict-JSON
@@ -119,8 +197,8 @@ path with **Claude Sonnet 5** producing every archetype answer:
    (age/income/tenure) come back on the API's `POST /branches/{id}/poll`. Note the
    score itself is against the placeholder target — it proves the loop, not accuracy.
 
-Reproduce live (with `ANTHROPIC_API_KEY`): `cargo run --bin validate -- --city carrboro`
-— same commands, no dump/seed steps.
+Reproduce live (with `ANTHROPIC_API_KEY`): `cargo run --bin validate -- --city readers`
+(or `--city carrboro`) — same commands, no dump/seed steps.
 
 ## License / attribution
 

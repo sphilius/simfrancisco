@@ -18,11 +18,20 @@ pub struct CityProfile {
     pub prompt_name: String,
     /// Resident demonym used in persona prose, e.g. "San Franciscan".
     pub demonym: String,
+    /// Audience-panel profile (fork A): when set, the population is seeded from this
+    /// `data/audiences/<slug>.json` persona file instead of Census microdata, and
+    /// polling clusters one-persona-per-archetype (curated members never merge).
+    /// City-only fields below then default to empty/zero and are unused.
+    #[serde(default)]
+    pub audience_path: Option<String>,
     /// County/core PUMA codes (2020 vintage) covered by this city.
+    #[serde(default)]
     pub pumas: Vec<u32>,
     /// Path to the committed PUMS subset CSV for this city.
+    #[serde(default)]
     pub pums_path: String,
     /// Path to this city's tiles.db.
+    #[serde(default)]
     pub tiles_path: String,
     /// PUMA -> neighborhood label.
     #[serde(default)]
@@ -32,8 +41,11 @@ pub struct CityProfile {
     pub centroids: Vec<CentroidEntry>,
     /// Pew metro religion shares, in [`crate::religion::Religion::all`] order:
     /// [Catholic, Protestant, OtherChristian, Unaffiliated, Jewish, Muslim, Buddhist, Hindu, Other].
+    #[serde(default)]
     pub religion_weights: [f64; 9],
+    #[serde(default)]
     pub politics: PoliticsProfile,
+    #[serde(default)]
     pub work: WorkClustering,
 }
 
@@ -52,8 +64,12 @@ pub struct CentroidEntry {
 }
 
 /// City-level electorate calibration + the LLM-prompt electorate description.
-#[derive(Clone, Debug, Deserialize)]
+#[derive(Clone, Debug, Default, Deserialize)]
+#[serde(default)]
 pub struct PoliticsProfile {
+    /// Full replacement for the Vote system prompt (audience panels use this to drop
+    /// the electorate framing entirely). When set, the template + facts are ignored.
+    pub vote_prompt_override: Option<String>,
     pub economic_base: f64,
     pub social_base: f64,
     pub trust_base: f64,
@@ -71,7 +87,8 @@ pub struct PoliticsProfile {
     pub belief_facts: String,
 }
 
-#[derive(Clone, Debug, Deserialize)]
+#[derive(Clone, Debug, Default, Deserialize)]
+#[serde(default)]
 pub struct WorkClustering {
     /// PUMA of the central business district where jobs concentrate.
     pub downtown_puma: u32,
@@ -118,6 +135,9 @@ impl CityProfile {
     /// Vote-framing system prompt. The SF assembly is byte-identical to the original
     /// hand-tuned prompt (prompt_name="San Francisco" + the SF vote_facts).
     pub fn vote_prompt(&self) -> String {
+        if let Some(t) = &self.politics.vote_prompt_override {
+            return t.clone();
+        }
         format!(
             "You simulate the {name} electorate for a nonpartisan academic forecasting model. \
 Reason as a real {name} resident with the given profile and lived experience of the city on the given date. \
@@ -164,6 +184,7 @@ Use ONLY knowledge available on the given date. Respond with STRICT JSON only, n
             display: "sim francisco".into(),
             prompt_name: "San Francisco".into(),
             demonym: "San Franciscan".into(),
+            audience_path: None,
             pumas: vec![7507, 7508, 7509, 7510, 7511, 7512, 7513, 7514],
             pums_path: crate::pums::default_sf_path(),
             tiles_path: std::env::var("TILES_DB").unwrap_or_else(|_| "tiles.db".into()),
@@ -195,6 +216,7 @@ Use ONLY knowledge available on the given date. Respond with STRICT JSON only, n
             .collect(),
             religion_weights: [0.24, 0.19, 0.02, 0.42, 0.02, 0.01, 0.03, 0.04, 0.03],
             politics: PoliticsProfile {
+                vote_prompt_override: None,
                 economic_base: -0.33,
                 social_base: -0.45,
                 trust_base: -0.03,

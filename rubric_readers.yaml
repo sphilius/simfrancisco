@@ -1,0 +1,38 @@
+# rubric_readers.yaml — SCAFFOLD rubric for the reader/player audience fork (A).
+# Runs one narrative-beat reaction poll over the example panel:
+#   cargo run --bin validate -- --city readers
+#
+# ⚠️ target_share is a PLACEHOLDER, not ground truth. The honest targets for this fork
+# come from the reviewer datasets: freeze the observed share of reviews that praise a
+# comparable beat (e.g. positive-mention rate of a mentor-betrayal twist among reviews
+# of a shipped title) BEFORE tuning prompts or the panel. The example panel in
+# data/audiences/readers.json is illustrative; replace/extend it with personas
+# distilled from the real reviewer data and value-shift tags.
+
+meta:
+  validation_n: 12          # ignored for audience panels (every member polled once)
+  default_seed: 42
+  notes: "Fork A scaffold: mentor-betrayal beat reception over the example reader/player panel, answered by claude-sonnet-5. Weights are audience shares (sum 100), so p_hat = share of the audience reacting positively."
+
+weights:
+  elections_measures: 1.0   # beat-reception polls ride the Vote framing (YES = loved it)
+  resolved_markets_sf_informative: 0.0
+  resolved_markets_general: 0.0
+  live_markets: 0.0
+  counterfactuals: 0.0      # next step: value-shift counterfactuals (e.g. add foreshadowing, re-poll)
+
+thresholds:
+  weighted_score_min: 0.25            # scaffold gate: proves the loop, not accuracy
+  elections_measures_max_abs_err: 0.20
+  resolved_markets_max_brier: 0.18
+  counterfactual_direction_min: 0.80
+
+elections_measures:
+  - id: mentor_betrayal_twist_reception
+    as_of_date: "2026-09-01"
+    model: claude-sonnet-5
+    population: all
+    question: "You finish the story containing the mentor-betrayal twist described below. When you write your review, do you single out this twist as something you loved (YES) rather than something that soured the story for you (NO)?"
+    description: "The work is a character-driven fantasy adventure (interactive story / novel hybrid). From the opening act, the mentor Elara recruits, trains, and shields the protagonist, and is written as the emotional anchor of the party. At the two-thirds mark it is revealed — with fair foreshadowing seeded from the prologue onward — that Elara herself orchestrated the disaster that set the protagonist on this path. The reveal cannot be prevented or altered by the reader/player; Elara leaves the party permanently, and the final act plays out in the shadow of the betrayal with a more somber tone. YES = in their review this person praises the twist (it deepened the story for them); NO = they flag it negatively (they felt betrayed by the story rather than along with the protagonist)."
+    target_share: 0.55   # PLACEHOLDER — replace with frozen reviewer-dataset ground truth
+    tolerance: 0.15

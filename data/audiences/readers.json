@@ -1,0 +1,125 @@
+{
+  "audience": "readers",
+  "members": [
+    {
+      "id": "bt_romantasy", "name": "Maya", "age": 26,
+      "segment": "BookTok romantasy devotee", "weight": 14,
+      "platforms": ["Kindle Unlimited", "BookTok"],
+      "genres": ["romantasy", "fae-court fantasy"],
+      "axes": {"narrative_risk": -0.5, "challenge": -0.4, "agency": -0.2, "tone": -0.4},
+      "values": ["found-family", "earned happy endings", "slow-burn payoff"],
+      "spoiler_tolerance": 0.3,
+      "persona": "Reads four books a week, DNFs fast, and posts emotional reviews to a 40k-follower audience; a betrayal of a beloved character can flip her from evangelist to warning-label reviewer overnight."
+    },
+    {
+      "id": "grimdark_vet", "name": "Doran", "age": 41,
+      "segment": "grimdark veteran", "weight": 8,
+      "platforms": ["hardcover", "r/fantasy"],
+      "genres": ["grimdark", "military fantasy"],
+      "axes": {"narrative_risk": 0.8, "challenge": 0.3, "agency": 0.0, "tone": 0.9},
+      "values": ["consequences that stick", "moral grayness", "no plot armor"],
+      "spoiler_tolerance": 0.7,
+      "persona": "Has read every Abercrombie and Cook; rates stories by whether they have the nerve to follow through on their own stakes."
+    },
+    {
+      "id": "cozy_comfort", "name": "Elspeth", "age": 34,
+      "segment": "cozy-fantasy comfort reader", "weight": 10,
+      "platforms": ["Kindle", "library ebook"],
+      "genres": ["cozy fantasy", "slice-of-life"],
+      "axes": {"narrative_risk": -0.9, "challenge": -0.6, "agency": -0.3, "tone": -0.9},
+      "values": ["kindness rewarded", "low-stakes warmth", "no beloved-character deaths"],
+      "spoiler_tolerance": 0.2,
+      "persona": "Reads nightly to decompress from a stressful job; checks content warnings and 'does the dog die' before starting anything."
+    },
+    {
+      "id": "litrpg_binger", "name": "Trevor", "age": 29,
+      "segment": "litRPG/progression binge-reader", "weight": 9,
+      "platforms": ["Royal Road", "Kindle Unlimited", "audiobook"],
+      "genres": ["litRPG", "progression fantasy"],
+      "axes": {"narrative_risk": 0.1, "challenge": 0.6, "agency": 0.4, "tone": 0.1},
+      "values": ["fair power scaling", "visible progression", "payoff for grinding"],
+      "spoiler_tolerance": 0.5,
+      "persona": "Consumes 200k-word serials in a weekend; tolerant of rough prose but merciless about betrayed build-up."
+    },
+    {
+      "id": "completionist", "name": "Ana", "age": 31,
+      "segment": "narrative-game completionist", "weight": 10,
+      "platforms": ["PC/Steam", "Switch"],
+      "genres": ["story-rich RPGs", "adventure games"],
+      "axes": {"narrative_risk": 0.2, "challenge": 0.2, "agency": 0.6, "tone": 0.1},
+      "values": ["choices matter", "no content locked away", "companion depth"],
+      "spoiler_tolerance": 0.4,
+      "persona": "100%s every companion questline; judges a twist by whether her earlier choices acknowledged it on replay."
+    },
+    {
+      "id": "challenge_seeker", "name": "Kenji", "age": 24,
+      "segment": "souls-like challenge seeker", "weight": 7,
+      "platforms": ["PC", "PS5"],
+      "genres": ["souls-likes", "roguelikes"],
+      "axes": {"narrative_risk": 0.5, "challenge": 0.9, "agency": 0.3, "tone": 0.6},
+      "values": ["earned victory", "no hand-holding", "environmental storytelling"],
+      "spoiler_tolerance": 0.8,
+      "persona": "Plays everything blind at max difficulty; respects stories that trust the player to piece things together."
+    },
+    {
+      "id": "casual_evening", "name": "Priya", "age": 38,
+      "segment": "casual evening player", "weight": 12,
+      "platforms": ["iPad", "Switch"],
+      "genres": ["cozy sims", "puzzle-narrative hybrids"],
+      "axes": {"narrative_risk": -0.3, "challenge": -0.8, "agency": -0.4, "tone": -0.2},
+      "values": ["respects my time", "pick-up-and-play", "gentle difficulty curve"],
+      "spoiler_tolerance": 0.5,
+      "persona": "Forty-five minutes after the kids are down; abandons anything that punishes a two-week break."
+    },
+    {
+      "id": "ttrpg_gm", "name": "Marcus", "age": 45,
+      "segment": "TTRPG game-master", "weight": 6,
+      "platforms": ["tabletop", "PC"],
+      "genres": ["TTRPG campaigns", "CRPGs"],
+      "axes": {"narrative_risk": 0.4, "challenge": 0.3, "agency": 0.9, "tone": 0.3},
+      "values": ["player agency", "emergent story", "NPCs with their own agendas"],
+      "spoiler_tolerance": 0.6,
+      "persona": "Twenty years behind the screen; steals every good betrayal beat for his home campaign and knows exactly when one is unearned."
+    },
+    {
+      "id": "litfic_reviewer", "name": "Helene", "age": 52,
+      "segment": "literary-fiction reviewer", "weight": 5,
+      "platforms": ["print", "Goodreads"],
+      "genres": ["literary fiction", "literary fantasy crossovers"],
+      "axes": {"narrative_risk": 0.6, "challenge": 0.0, "agency": -0.5, "tone": 0.4},
+      "values": ["thematic coherence", "earned tragedy", "prose quality"],
+      "spoiler_tolerance": 0.9,
+      "persona": "Writes long structural reviews; forgives any dark turn that the theme has been quietly arguing for since page one."
+    },
+    {
+      "id": "ya_librarian", "name": "Sam", "age": 33,
+      "segment": "YA librarian and gatekeeper", "weight": 8,
+      "platforms": ["ARCs", "library"],
+      "genres": ["YA fantasy", "middle grade"],
+      "axes": {"narrative_risk": -0.2, "challenge": -0.3, "agency": -0.1, "tone": -0.3},
+      "values": ["hopeful endings", "representation", "mentors teens can trust"],
+      "spoiler_tolerance": 0.4,
+      "persona": "Hand-sells to teen readers and orders for the collection; thinks hard about what a mentor's betrayal models for a 14-year-old."
+    },
+    {
+      "id": "vn_romancer", "name": "Lena", "age": 27,
+      "segment": "visual-novel route completionist", "weight": 6,
+      "platforms": ["PC", "mobile"],
+      "genres": ["visual novels", "romance sims"],
+      "axes": {"narrative_risk": 0.0, "challenge": -0.2, "agency": 0.7, "tone": -0.1},
+      "values": ["route fairness", "character interiority", "flagged content"],
+      "spoiler_tolerance": 0.3,
+      "persona": "Plays every route including the bad ends; a twist is fine, but taking a beloved companion off the board permanently better unlock something."
+    },
+    {
+      "id": "access_first", "name": "Rob", "age": 36,
+      "segment": "accessibility-first player", "weight": 5,
+      "platforms": ["PC with remapped controls", "Xbox"],
+      "genres": ["narrative adventures", "walking sims"],
+      "axes": {"narrative_risk": 0.1, "challenge": -0.5, "agency": 0.2, "tone": 0.0},
+      "values": ["difficulty options", "no fail-states as punishment", "story mode parity"],
+      "spoiler_tolerance": 0.6,
+      "persona": "Reviews games for an accessibility outlet; cares whether the emotional gut-punch is delivered through play rather than a cutscene."
+    }
+  ]
+}

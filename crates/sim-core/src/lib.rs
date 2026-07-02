@@ -9,6 +9,7 @@
 
 pub mod aggregate;
 pub mod agent;
+pub mod audience;
 pub mod city;
 pub mod geo;
 pub mod lifestyle;

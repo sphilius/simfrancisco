@@ -218,6 +218,7 @@ To re-seed the engine with your own population, you touch **data only**:
 | 3 | `rubric_<slug>.yaml` | The questions you poll + frozen targets + scoring gates |
 | 4 | `data/news/<slug>.json` | *(optional)* current-events context for live-dated polls |
 | 5 | `data/survey/*.csv` | *(optional, shared)* hobby/routine/spending tables behind the lifestyle layer |
+| 6 | `data/audiences/<slug>.json` | *(fork A alternative to #1)* a curated audience panel — reader/player personas with taste axes, value tags, and composition weights; enabled by `audience_path` in the profile TOML (`audience.rs`) |
 
 Then: `cargo run --bin validate -- --city <slug>`. No tiles.db, no code — unless you
 also want the city in the HTTP server (one line in `api.rs::build_state`) or on the
@@ -228,4 +229,8 @@ The **hard boundary** of the data-only interface: persona *semantics* live in co
 and the persona-prose template are Rust (`agent.rs`, `persona.rs`, `predict.rs`). A
 fork whose personas are still "people in a place with demographics" never hits this
 boundary; a fork that needs different *kinds* of traits (e.g. genre taste axes) does.
-That boundary is what decides the fork comparison in `FORK_NOTES.md`.
+That boundary decided the fork comparison in `FORK_NOTES.md` — and the audience seam
+(`audience.rs` + `audience_path`, row 6 above) is the scaffold built to cross it:
+audience profiles seed from persona JSON instead of PUMS, poll one-persona-per-
+archetype, and may replace the electorate system prompt via `vote_prompt_override`.
+Everything downstream (batching, weighted aggregation, rubric, scorecard) is shared.
