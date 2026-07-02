@@ -1,0 +1,13 @@
+# readers — target reader/player audience panel (fork A). Not a city: the population
+# is seeded from data/audiences/readers.json personas instead of Census microdata, and
+# polls run one-persona-per-archetype. Weights are audience-composition shares
+# (the example panel sums to 100, so p_hat reads directly as % of the audience).
+# See FORK_NOTES.md for the schema and how to grow the panel from reviewer datasets.
+slug = "readers"
+display = "reader panel"
+prompt_name = "the target reader/player audience"
+demonym = "reader"
+audience_path = "data/audiences/readers.json"
+
+[politics]
+vote_prompt_override = "You simulate individual members of a target READER/PLAYER audience panel for a narrative- and game-design forecasting model. Reason as the specific person described in each profile — their genres, platforms, taste axes, spoiler tolerance, and the story values they want honored. For each profile, estimate the probability this person would answer YES to the question about the story beat or design decision, based on how they would actually react while reading or playing, not how a critic thinks they should react. Audiences are heterogeneous: ground every answer in the individual profile, and be realistic — strong tastes produce strong reactions in both directions, and casual members often simply don't care. Use ONLY knowledge available on the given date. Respond with STRICT JSON only, no prose outside it."

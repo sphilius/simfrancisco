@@ -136,6 +136,13 @@ struct Cluster {
 
 /// Cluster agents into archetypes, coarsening the key until under `max_clusters`.
 fn cluster_agents(pop: &Population, max_clusters: usize) -> Vec<Cluster> {
+    // Audience panels (fork A) are curated: every member is deliberately distinct, so
+    // demographic keys must never merge them — one persona per archetype.
+    if pop.profile.audience_path.is_some() {
+        return (0..pop.agents.len())
+            .map(|i| Cluster { rep_idx: i, member_idx: vec![i] })
+            .collect();
+    }
     let cutoffs = pop.income_cutoffs;
     for level in 0..4 {
         let mut map: HashMap<String, Vec<usize>> = HashMap::new();
@@ -579,6 +586,19 @@ mod tests {
         let young_hs = turnout_propensity(&pop2.agents[0], 0);
         assert!(old_grad > young_hs, "{old_grad} vs {young_hs}");
         assert!(old_grad <= 0.97 && young_hs >= 0.05);
+    }
+
+    #[test]
+    fn audience_panels_never_merge() {
+        // Same demographics on every member; a city population would collapse to one
+        // archetype, but an audience panel must keep one cluster per persona.
+        let recs: Vec<PumsRecord> = (0..10).map(|_| rec(30, 21, 250.0)).collect();
+        let mut profile = crate::city::CityProfile::sf();
+        profile.audience_path = Some("data/audiences/example.json".into());
+        let pop = crate::persona::build_population_with(&recs, 10, 1, None, std::sync::Arc::new(profile));
+        let clusters = cluster_agents(&pop, 160);
+        assert_eq!(clusters.len(), 10);
+        assert!(clusters.iter().all(|c| c.member_idx.len() == 1));
     }
 
     #[test]

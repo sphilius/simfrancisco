@@ -74,13 +74,6 @@ async fn run(args: Args) -> i32 {
             return 2;
         }
     };
-    let records = match pums::load_city(&profile) {
-        Ok(r) => r,
-        Err(e) => {
-            eprintln!("failed to load PUMS for {} ({e}). Run `ingest_pums --city {}` first.", args.city, args.city);
-            return 2;
-        }
-    };
     let cache = Cache::open("cache.db").ok().map(Arc::new);
     let client = match ModelClient::from_env(cache) {
         Ok(c) => c,
@@ -94,8 +87,29 @@ async fn run(args: Args) -> i32 {
     }
     let engine = Engine::new(client.clone());
 
-    eprintln!("Building {} population N={n} seed={seed} (clean mode) ...", args.city);
-    let pop = build_population_with(&records, n, seed, None, profile.clone());
+    // Audience-panel profiles (fork A) seed from persona JSON; city profiles from PUMS.
+    let pop = if let Some(apath) = profile.audience_path.clone() {
+        let members = match simfrancisco::audience::load(&apath) {
+            Ok(m) => m,
+            Err(e) => {
+                eprintln!("failed to load audience {} ({e})", apath);
+                return 2;
+            }
+        };
+        n = members.len(); // a panel is authored, not sampled
+        eprintln!("Building {} audience panel: {} members (clean mode) ...", args.city, n);
+        simfrancisco::audience::build_population(&members, seed, profile.clone())
+    } else {
+        let records = match pums::load_city(&profile) {
+            Ok(r) => r,
+            Err(e) => {
+                eprintln!("failed to load PUMS for {} ({e}). Run `ingest_pums --city {}` first.", args.city, args.city);
+                return 2;
+            }
+        };
+        eprintln!("Building {} population N={n} seed={seed} (clean mode) ...", args.city);
+        build_population_with(&records, n, seed, None, profile.clone())
+    };
 
     let mut categories: Vec<CategoryScore> = Vec::new();
     let mut report = serde_json::Map::new();

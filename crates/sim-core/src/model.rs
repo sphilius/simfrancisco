@@ -33,6 +33,7 @@ pub enum Model {
     Gpt55,
     Grok43,
     Sonnet,
+    Sonnet5,
 }
 
 impl Model {
@@ -42,13 +43,14 @@ impl Model {
             Model::Gpt55 => "gpt-5.5",
             Model::Grok43 => "grok-4.3",
             Model::Sonnet => "claude-sonnet-4-6",
+            Model::Sonnet5 => "claude-sonnet-5",
         }
     }
     pub fn provider(&self) -> Provider {
         match self {
             Model::Gpt4o | Model::Gpt55 => Provider::AzureResponses,
             Model::Grok43 => Provider::AzureChat,
-            Model::Sonnet => Provider::Anthropic,
+            Model::Sonnet | Model::Sonnet5 => Provider::Anthropic,
         }
     }
     /// gpt-4o / gpt-5.5 use the /responses shape; grok-4.3 uses /chat/completions.
@@ -60,6 +62,7 @@ impl Model {
             "gpt-4o" | "gpt4o" | "4o" => Model::Gpt4o,
             "gpt-5.5" | "gpt55" | "gpt-55" | "5.5" => Model::Gpt55,
             "grok-4.3" | "grok" | "grok43" => Model::Grok43,
+            "claude-sonnet-5" | "sonnet-5" | "sonnet5" => Model::Sonnet5,
             s if s.starts_with("claude") || s == "sonnet" => Model::Sonnet,
             _ => Model::Gpt4o,
         }
@@ -224,6 +227,17 @@ impl ModelClient {
                 self.usage.cache_hits.fetch_add(1, Ordering::Relaxed);
                 return Ok(hit);
             }
+        }
+        // Bring-your-own-LLM escape hatch: on a cache miss, optionally dump the exact
+        // prompt so answers can be produced out-of-band and inserted into the cache
+        // (same key), then re-run offline. Off unless DUMP_PROMPTS_DIR is set.
+        if let Ok(dir) = std::env::var("DUMP_PROMPTS_DIR") {
+            let _ = std::fs::create_dir_all(&dir);
+            let dump = json!({
+                "key": key, "model": model.id(), "system": system,
+                "user": user, "max_tokens": max_tokens.max(16),
+            });
+            let _ = std::fs::write(format!("{dir}/{key}.json"), dump.to_string());
         }
         if self.offline {
             return Err(anyhow!("offline mode: cache miss for {}", model.id()));

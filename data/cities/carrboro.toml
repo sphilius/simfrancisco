@@ -1,0 +1,35 @@
+# carrboro — ArtsCenter/Carrboro community twin (first fork of the city engine).
+# Seeds a small-town NC population for program-demand forecasting rather than a big-city
+# electorate. See FORK_NOTES.md. PUMA 1301 ≈ the 2020-vintage NC PUMA covering
+# Orange County (Carrboro / Chapel Hill) — verify against the Census PUMA names file
+# when swapping the example CSV for a real psam_p37.csv pull.
+slug = "carrboro"
+display = "sim carrboro"
+prompt_name = "Carrboro, North Carolina"
+demonym = "North Carolinian"
+pumas = [1301]
+pums_path = "data/carrboro_pums.csv"
+tiles_path = "server_tiles/carrboro.db" # no map built; polling/validate never open tiles
+religion_weights = [0.08, 0.33, 0.03, 0.40, 0.03, 0.01, 0.02, 0.02, 0.08]
+
+[politics]
+economic_base = -0.35
+social_base = -0.5
+trust_base = 0.1
+change_base = 0.1
+s_housing = 0.7
+s_crime = 0.15
+s_homeless = 0.25
+s_cost = 0.7
+s_environment = 0.7
+s_immigration = 0.3
+vote_facts = "Carrboro is a small, deeply progressive college town of about 21,000 people next to Chapel Hill and the University of North Carolina — one of the most left-leaning municipalities in the South, with a highly educated population (well over half of adults hold a bachelor's degree or higher), many university employees and graduate students, artists, musicians, and young families, alongside long-time working-class residents squeezed by rising rents. The town has a strong local-arts identity: The ArtsCenter, the Cat's Cradle music venue, the weekly farmers' market, and open-studio tours are civic anchors, and residents are proud of supporting community institutions. Some questions here are about actual PARTICIPATION (registering, paying, attending) rather than ballot measures: a YES means this specific resident's household would really do the thing this season. Weigh cost, free time, childcare, kids' ages, personal interests, and competing commitments honestly — goodwill toward an institution is much more common than paid sign-ups, and most residents do NOT register for any given program even when they like it."
+belief_facts = "Carrboro sits in Orange County, North Carolina, one of the most Democratic counties in the South; municipal decisions are made by a progressive town council. For program-demand questions, base rates matter: even popular community programs enroll only a small share of a town's residents in any given season."
+
+[work]
+downtown_puma = 1301
+downtown_share = 0.4
+
+[[neighborhoods]]
+puma = 1301
+label = "Carrboro"
